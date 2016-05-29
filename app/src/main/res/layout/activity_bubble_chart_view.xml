@@ -4,13 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.tlh.hellochartsdemo.MainActivity">
+    tools:context="com.tlh.hellochartsdemo.BubbleChartViewActivity">
 
-    <ListView
-        android:id="@android:id/list"
+    <lecho.lib.hellocharts.view.BubbleChartView
+        android:id="@+id/bcv"
         android:layout_width="match_parent"
-        android:cacheColorHint="@android:color/transparent"
-        android:listSelector="@android:color/transparent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"/>
 
 </RelativeLayout>

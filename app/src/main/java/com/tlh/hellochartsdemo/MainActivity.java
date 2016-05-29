@@ -1,62 +1,90 @@
 package com.tlh.hellochartsdemo;
 
-import android.graphics.Color;
+import android.app.ListActivity;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
-import lecho.lib.hellocharts.gesture.ContainerScrollType;
-import lecho.lib.hellocharts.model.Line;
-import lecho.lib.hellocharts.model.LineChartData;
-import lecho.lib.hellocharts.model.PointValue;
-import lecho.lib.hellocharts.view.LineChartView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends ListActivity {
 
-    @InjectView(R.id.chart)
-    LineChartView mChart;
+    private List<ResolveInfo> mActivities;
+    private MyAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
-        initView();
         iniData();
     }
 
-    private void initView() {
-        //控制用户是否能缩放、滑动、选择：默认为true
-        this.mChart.setInteractive(false);
-        //将charts包含在可滑动的容器中
-        this.mChart.setContainerScrollEnabled(true, ContainerScrollType.HORIZONTAL);
-    }
-
     private void iniData() {
-        //准备点
-        List<PointValue> values = new ArrayList<PointValue>();
-        values.add(new PointValue(0, 2));
-        values.add(new PointValue(1, 4));
-        values.add(new PointValue(2, 3));
-        values.add(new PointValue(3, 4));
-
-        //In most cased you can call data model methods in builder-pattern-like manner.
-        //构成线
-        Line line = new Line(values).setColor(Color.BLUE).setCubic(true);
-        line.setStrokeWidth(2);
-        List<Line> lines = new ArrayList<Line>();
-        lines.add(line);
-
-        //设置数据
-        LineChartData data = new LineChartData();
-        data.setLines(lines);
-
-        mChart.setLineChartData(data);
+        PackageManager pm=getPackageManager();
+        Intent intent=new Intent();
+        intent.setAction(Intent.ACTION_MAIN);
+        intent.addCategory("com.tlh.hellochartsdemo");
+        mActivities = pm.queryIntentActivities(intent, 0);
+        mAdapter = new MyAdapter();
+        setListAdapter(mAdapter);
     }
 
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        ResolveInfo resolveInfo = mActivities.get(position);
+        Intent intent=new Intent();
+        ComponentName component=new ComponentName(MainActivity.this, resolveInfo.activityInfo.name);
+        intent.setComponent(component);
+        startActivity(intent);
+    }
+
+    private final class MyAdapter extends BaseAdapter {
+
+        @Override
+        public int getCount() {
+            if(mActivities!=null){
+                return mActivities.size();
+            }
+            return 0;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            if(mActivities!=null){
+                return mActivities.get(position);
+            }
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            TextView view=new TextView(MainActivity.this);
+            view.setGravity(Gravity.CENTER);
+            view.setTextSize(25);
+            ActivityInfo activityInfo = mActivities.get(position).activityInfo;
+            String name = activityInfo.name;
+            name=name.substring(name.lastIndexOf(".")+1,name.length());
+            view.setText(name);
+            return view;
+        }
+
+    }
 
 }

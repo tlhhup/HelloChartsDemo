@@ -15,6 +15,27 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name=".LineChartsActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="com.tlh.hellochartsdemo"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".PieChartActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="com.tlh.hellochartsdemo"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".BubbleChartViewActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="com.tlh.hellochartsdemo"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
